@@ -15,12 +15,7 @@ A Claude Code mod for the desktop app. After 30 seconds, a running command gets 
 
 ![Two desktop app chats run the same 36-test Python suite. The left chat has ticker, and its line says which test failed and which test runs now. The right chat shows only "Running the app's unittest suite verbosely".](docs/demo.gif)
 
-<p align="center">
-<b>A line at 30 seconds</b> &nbsp;·&nbsp; <b>about 2 cents an hour of Haiku</b><br>
-<sub>Left: ticker. Right: no mod. A real 36-test run, 26 October 2026, at 4× speed. <a href="docs/demo.mp4">Full run</a>.</sub>
-</p>
-
-You need Claude Code on macOS. The mod was built and tested in the desktop app.
+<p align="center"><sub>Left: ticker. Right: no mod. <a href="docs/demo.mp4">Full run</a>.</sub></p>
 
 ## Install
 

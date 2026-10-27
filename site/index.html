@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>ticker: see what a long command is doing</title>
-<meta name="description" content="ticker is a Claude Code mod that shows one plain-words line about a long command while it runs: where it is up to and what failed. Install it in one click.">
+<meta name="description" content="ticker is a Claude Code mod that shows one plain-words line about a long command while it runs. Install it in one click.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ticker">
-<meta property="og:description" content="See what a long command is doing, in plain words. A Claude Code mod for the desktop app. After 30 seconds, a running command gets one line that says where it is up to and what failed. The line goes away when the command ends.">
+<meta property="og:description" content="See what a long command is doing, in plain words. A Claude Code mod. After 30 seconds, a running command gets one line: where it's up to, and what failed.">
 <meta property="og:url" content="https://adamalshoomary.github.io/ticker/">
 <meta property="og:image" content="https://adamalshoomary.github.io/ticker/card.png">
 <meta property="og:image:width" content="1280">
@@ -46,34 +46,33 @@
   code, pre { font: 15px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   pre { background: var(--code); border-radius: 10px; padding: 14px 16px; margin: 0; overflow-x: auto; }
   p code, span code { background: var(--code); border-radius: 6px; padding: 1px 6px; font-size: 15px; white-space: nowrap; }
-  h2 { font-size: 30px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 20px; }
+  h2 { font-size: 30px; line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 16px; }
   p { margin: 0 0 14px; }
   section { margin: 0 0 80px; }
   header { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; align-items: center; margin: 0 0 80px; }
   header h1 { font-size: 96px; line-height: 0.9; letter-spacing: -0.05em; margin: 0 0 22px; font-weight: 800; }
   header .lead { font-size: 28px; line-height: 1.25; letter-spacing: -0.015em; margin: 0 0 14px; font-weight: 500; }
-  header .sub { color: var(--muted); font-size: 17px; margin: 0; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 40px 44px; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 40px; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 24px 48px -32px rgba(0,0,0,.3); }
-  .panel h2 { margin: 0 0 12px; font-size: 32px; }
-  .panel p { margin: 0; font-size: 17px; color: var(--muted); max-width: 360px; }
-  .big { display: flex; justify-content: space-between; align-items: center; gap: 16px; background: var(--accent); color: var(--accent-fg); text-decoration: none; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; padding: 18px 22px; border-radius: 12px; transition: transform .12s ease, filter .12s ease; }
+  header .sub { color: var(--muted); font-size: 17px; margin: 0; max-width: 420px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 40px 44px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 24px 48px -32px rgba(0,0,0,.3); }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 32px; }
+  .top h2 { margin: 0 0 6px; font-size: 32px; }
+  .top p { margin: 0; font-size: 17px; color: var(--muted); }
+  .big { flex: none; display: inline-flex; align-items: center; gap: 14px; background: var(--accent); color: var(--accent-fg); text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; padding: 16px 24px; border-radius: 12px; transition: transform .12s ease, filter .12s ease; }
   .big:hover { transform: translateY(-1px); filter: brightness(1.05); }
-  .big span { font-size: 22px; line-height: 1; opacity: .9; }
-  .or { margin: 22px 2px 10px; font-size: 15px; color: var(--muted); }
-  .copy { display: flex; gap: 8px; align-items: stretch; }
-  .copy code { flex: 1; background: var(--code); border-radius: 10px; padding: 13px 14px; overflow-wrap: anywhere; font-size: 14px; }
-  .copy button { font: inherit; font-size: 14px; font-weight: 600; padding: 0 16px; border-radius: 10px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  .big span { font-size: 20px; line-height: 1; }
+  .term { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .term .label { margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--muted); }
+  .copy { display: flex; align-items: center; gap: 12px; background: var(--code); border-radius: 12px; padding: 8px 8px 8px 18px; }
+  .copy code { flex: 1; overflow-x: auto; white-space: nowrap; font-size: 15px; padding: 6px 0; }
+  .copy button { flex: none; font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
   .copy button:hover { border-color: var(--muted); }
-  .nw { white-space: nowrap; }
-  .hint { margin: 12px 2px 0; font-size: 15px; color: var(--muted); }
   .chips { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
   .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 15px; color: var(--muted); background: var(--panel); }
   .chips li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
-  details { margin: 18px 0 0; }
+  details { margin: 20px 0 0; }
   summary { cursor: pointer; font-weight: 600; color: var(--muted); }
-  details p { margin: 14px 0 6px; }
-  details pre { margin: 0 0 10px; }
-  .warn { margin: 22px 0 0; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--line); border-left: 4px solid var(--accent); background: var(--panel); font-size: 16px; }
+  details p { margin: 14px 0 8px; font-size: 16px; }
+  .warn { margin: 20px 0 0; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--line); border-left: 4px solid var(--accent); background: var(--panel); font-size: 16px; }
   .run > p { max-width: 640px; }
   .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 28px; }
   .three b { display: block; font-size: 17px; margin: 0 0 6px; }
@@ -86,14 +85,15 @@
     header .lead { font-size: 24px; }
     h2 { font-size: 26px; }
     section { margin-bottom: 72px; }
-    .panel { grid-template-columns: 1fr; gap: 26px; padding: 28px 22px; }
-    .panel h2 { font-size: 28px; }
+    .panel { padding: 28px 22px; }
+    .top { flex-direction: column; align-items: stretch; gap: 20px; }
+    .top h2 { font-size: 28px; }
+    .big { justify-content: space-between; }
+    .copy { flex-direction: column; align-items: stretch; padding: 14px; }
+    .copy code { white-space: normal; font-size: 14px; }
+    .nw { white-space: nowrap; }
     .three { grid-template-columns: 1fr; gap: 18px; }
     .ticks { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 420px) {
-    .copy { flex-direction: column; }
-    .copy button { padding: 10px 16px; }
   }
 </style>
 </head>
@@ -103,51 +103,52 @@
     <div>
       <h1>ticker</h1>
       <p class="lead">See what a long command is doing, in plain words.</p>
-      <p class="sub">A Claude Code mod for the desktop app. After 30 seconds, a running command gets one line that says where it is up to and what failed. The line goes away when the command ends.</p>
+      <p class="sub">A Claude Code mod. After 30 seconds, a running command gets one line: where it's up to, and what failed.</p>
     </div>
     <div class="chat">
   <p class="label">Without a mod</p>
   <div class="row muted"><i class="dot"></i><span>Running the app's unittest suite</span><em>1m 41s</em></div>
   <p class="label">With ticker</p>
-  <div class="row"><i class="dot on"></i><span>Rotate image test failed; JSON import test is running now</span><em>1m 43s</em></div>
-  <div class="sub-row">22 of 36 tests done, one failure so far: image rotation</div>
+  <div class="row"><i class="dot on"></i><span>Running the app's unittest suite</span><em>1m 43s</em></div>
+  <div class="sub-row">22 of 36 tests done; the rotate image test failed</div>
 </div>
   </header>
 
   <section id="install">
     <div class="panel">
-      <div>
-        <h2>Install</h2>
-        <p>One click opens the Claude Code app with the install request typed in. Press Return and Claude installs it.</p>
+      <div class="top">
+        <div>
+          <h2>Install</h2>
+          <p>One click, then press Return.</p>
+        </div>
+        <a class="big" href="claude://code/new?q=Install%20the%20ticker%20mod%20from%20https%3A%2F%2Fgithub.com%2Fadamalshoomary%2Fticker.">Open in Claude Code <span>→</span></a>
       </div>
-      <div>
-        <a class="big" href="claude://code/new?q=Install%20the%20ticker%20mod%20from%20https%3A%2F%2Fgithub.com%2Fadamalshoomary%2Fticker.">Open in the Claude Code app <span>→</span></a>
-        <p class="or">Or paste this into Terminal and press Return:</p>
+      <div class="term">
+        <p class="label">Or paste into Terminal</p>
         <div class="copy">
           <code id="line">claude plugin install ticker <span class="nw">--marketplace</span> adamalshoomary/ticker</code>
           <button id="copy" type="button">Copy</button>
         </div>
-        <p class="hint">Then start a new session in the desktop app.</p>
       </div>
     </div>
     <ul class="chips" aria-label="You need"><li>Claude Code desktop app</li><li>macOS</li><li>A Claude plan or API key</li></ul>
     
     <details>
       <summary>Other ways to install</summary>
-      <p>In the desktop app: click <b>+</b> next to the prompt box, then <b>Plugins</b>, then <b>Add marketplace</b>. Type <code>adamalshoomary/ticker</code>, then click <b>Add plugin</b>.</p>
-      <p>In a terminal session of Claude Code:</p>
+      <p>Desktop app: <b>+</b> next to the prompt → <b>Plugins</b> → <b>Add marketplace</b> → <code>adamalshoomary/ticker</code> → <b>Add plugin</b>.</p>
+      <p>Claude Code in a terminal:</p>
       <pre>/plugin install ticker --marketplace adamalshoomary/ticker</pre>
     </details>
   </section>
 
   <section class="run">
     <h2>Then run anything long</h2>
-    <p>Nothing to set up. Any Bash command that runs for 30 seconds gets the line, in the main chat and in subagents.</p>
-    <div class="three"><div><b>At 30 seconds</b><span>The mod's own rules count tests, files and steps, and show a first line.</span></div><div><b>Every 20 seconds</b><span>Haiku turns the counts and the newest output into one sentence. A sentence with a number the rules did not count is refused.</span></div><div><b>No model at all</b><span>Set <code>summaries</code> to <code>rules</code>, and the rules write every line for free.</span></div></div>
+    <p>Any command over 30 seconds gets the line, in subagents too.</p>
+    <div class="three"><div><b>At 30 seconds</b><span>Rules count the tests, files and steps.</span></div><div><b>Every 20 seconds</b><span>Haiku turns them into one sentence. Every number is checked.</span></div><div><b>Free mode</b><span>Set <code>summaries</code> to <code>rules</code> for no model calls.</span></div></div>
   </section>
 
   <footer>
-    <p><a href="https://github.com/adamalshoomary/ticker">ticker on GitHub</a>, with limits and how it works · Tested live in the Claude Code desktop app on macOS, 26 October 2026 · MIT licence</p>
+    <p><a href="https://github.com/adamalshoomary/ticker">ticker on GitHub</a> · MIT licence</p>
   </footer>
 </main>
 <script>

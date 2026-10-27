@@ -86,50 +86,54 @@ async function textOf(ui: { find: Mounted<'desktop'>['find'] }, text: RegExp = /
   return (await ui.find({ type: 'Text', text }))?.text
 }
 
-async function rowLine($: Engine, toolUseId: string) {
-  const ui = await $.ui.mount({
+/** The command's row, mounted and kept on screen as the transcript keeps it. */
+function toolRow($: Engine, toolUseId: string) {
+  return $.ui.mount({
     plugin: 'ticker',
     surface: 'desktop',
     component: 'ToolUse',
     requestId: toolUseId,
     props: { tool_use_id: toolUseId, tool: 'Bash', input: { command: COMMAND }, isRunning: true, isErrored: false, isInterrupted: false },
   })
-  const line = await textOf(ui, /^(?!row$)/)
-  await ui.unmount()
-  return line
 }
 
-test('the rules line shows at 30 s, then the line from Haiku, in the spinner and under the row', async ($, on) => {
+async function lineUnder(ui: { find: Mounted<'desktop'>['find'] }) {
+  return textOf(ui, /^(?!row$)/)
+}
+
+test('the rules line shows under the row at 30 s, then the line from Haiku; the spinner keeps its own words', async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'Running the app tests, 12 done, one failure so far')
-  const row = await spinner($)
+  const spin = await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND, description: 'Run the 36 app tests' })
+  await clock.advance(1_000)
+  const row = await toolRow($, world.toolUseId)
 
-  await clock.advance(25_000)
-  expect(await textOf(row)).toBe('Running the app tests')
-  expect(await rowLine($, world.toolUseId)).toBeUndefined()
+  await clock.advance(24_000)
+  expect(await lineUnder(row)).toBeUndefined()
 
   await clock.advance(5_000)
-  expect(await textOf(row)).toBe('1 test failed so far (test_08_rotate_image); 12 done')
+  expect(await lineUnder(row)).toBe('1 test failed so far (test_08_rotate_image); 12 done')
   expect(world.prompts.length).toBe(0)
 
   await clock.advance(1_000)
   expect(world.prompts.length).toBe(1)
   expect(world.prompts[0]?.includes('Tests finished so far: 12 (11 passed, 1 failed)')).toBe(true)
-  expect(await textOf(row)).toBe('Running the app tests, 12 done, one failure so far')
-  expect(await rowLine($, world.toolUseId)).toBe('Running the app tests, 12 done, one failure so far')
+  expect(await lineUnder(row)).toBe('Running the app tests, 12 done, one failure so far')
+  expect(await textOf(spin)).toBe('Running the app tests')
 
   await clock.advance(60_000)
   await call
-  expect(await textOf(row)).toBe('Running the app tests')
+  expect(await textOf(spin)).toBe('Running the app tests')
 })
 
 test('Haiku is asked every 20 s while the output changes', async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'Running the app tests')
-  await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND })
-  await clock.advance(85_000)
+  await clock.advance(1_000)
+  await toolRow($, world.toolUseId)
+  await clock.advance(84_000)
   expect(world.prompts.length).toBe(3)
   await clock.advance(10_000)
   await call
@@ -138,10 +142,11 @@ test('Haiku is asked every 20 s while the output changes', async ($, on) => {
 test('Haiku is asked every 60 s once the output is quiet', async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'Running the app tests', 300_000)
-  await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND })
+  await clock.advance(1_000)
+  await toolRow($, world.toolUseId)
   // Output stops at 90 s (36 tests). Asks: 30, 50, 70, 90, then 150, 210, 270.
-  await clock.advance(295_000)
+  await clock.advance(294_000)
   expect(world.prompts.length).toBe(7)
   await clock.advance(10_000)
   await call
@@ -149,11 +154,12 @@ test('Haiku is asked every 60 s once the output is quiet', async ($, on) => {
 
 test('a reply with a count the rules did not compute gives way to the rules line', async ($, on) => {
   const clock = mock.clock(on)
-  session(on, clock, 'Running the app tests, 12 of 36 done')
-  const row = await spinner($)
+  const world = session(on, clock, 'Running the app tests, 12 of 36 done')
   const call = $.tool.call({ tool: 'Bash', command: COMMAND, description: 'Run the 36 app tests' })
-  await clock.advance(31_000)
-  expect(await textOf(row)).toBe('1 test failed so far (test_08_rotate_image); 12 done')
+  await clock.advance(1_000)
+  const row = await toolRow($, world.toolUseId)
+  await clock.advance(30_000)
+  expect(await lineUnder(row)).toBe('1 test failed so far (test_08_rotate_image); 12 done')
   await clock.advance(60_000)
   await call
 })
@@ -161,11 +167,12 @@ test('a reply with a count the rules did not compute gives way to the rules line
 test('the rules setting calls no model', { options: { summaries: 'rules' } }, async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'unused')
-  const row = await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND })
-  await clock.advance(60_000)
+  await clock.advance(1_000)
+  const row = await toolRow($, world.toolUseId)
+  await clock.advance(59_000)
   expect(world.prompts.length).toBe(0)
-  expect(await textOf(row)).toBe('1 test failed so far (test_08_rotate_image); 24 done')
+  expect(await lineUnder(row)).toBe('1 test failed so far (test_08_rotate_image); 24 done')
   await clock.advance(30_000)
   await call
 })
@@ -173,11 +180,12 @@ test('the rules setting calls no model', { options: { summaries: 'rules' } }, as
 test('Haiku is skipped while no window shows the session', async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'unused', 90_000, [])
-  const row = await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND })
-  await clock.advance(60_000)
+  await clock.advance(1_000)
+  const row = await toolRow($, world.toolUseId)
+  await clock.advance(59_000)
   expect(world.prompts.length).toBe(0)
-  expect(await textOf(row)).toBe('1 test failed so far (test_08_rotate_image); 24 done')
+  expect(await lineUnder(row)).toBe('1 test failed so far (test_08_rotate_image); 24 done')
   await clock.advance(30_000)
   await call
 })
@@ -185,6 +193,7 @@ test('Haiku is skipped while no window shows the session', async ($, on) => {
 test('Haiku is skipped while nothing draws the line', async ($, on) => {
   const clock = mock.clock(on)
   const world = session(on, clock, 'unused')
+  await spinner($)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND })
   await clock.advance(60_000)
   expect(world.prompts.length).toBe(0)
@@ -205,15 +214,15 @@ test("a subagent's command shows in the band while the main chat is idle", async
   expect(await textOf(idle)).toBeUndefined()
 })
 
-test("a subagent's command shows in the main spinner while the main chat works", async ($, on) => {
+test("a subagent's command shows in the band while the main chat works, and the spinner keeps its words", async ($, on) => {
   const clock = mock.clock(on)
   session(on, clock, 'Running the app tests, 12 done, one failure so far')
-  const row = await spinner($)
+  const spin = await spinner($)
   const working = await band($, true)
   const call = $.tool.call({ tool: 'Bash', command: COMMAND, agentId: 'a1' })
   await clock.advance(31_000)
-  expect(await textOf(row)).toBe('Running the app tests, 12 done, one failure so far')
-  expect(await textOf(working)).toBeUndefined()
+  expect(await textOf(spin)).toBe('Running the app tests')
+  expect(await textOf(working)).toBe('Subagent: Running the app tests, 12 done, one failure so far')
   await clock.advance(60_000)
   await call
 })

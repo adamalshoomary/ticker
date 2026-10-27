@@ -1,12 +1,14 @@
 import type { EngineInterface, Register } from 'claude-code'
 
 import { acceptReply, feed, newTally, promptFor, rulesLine, skipTo, SYSTEM, type Tally } from './lines'
+import { sized, tape } from './icons'
+import { below, checkSoon, registerUpdate } from './update'
 
 // ticker: while a Bash command runs in the main chat or a subagent,
 // read the output file Claude Code writes for it, count what known tools
-// report, and show one plain-words line in the spinner row and under the
-// command's row. A line the spinner cannot show, such as a background
-// subagent's while the main chat is idle, goes in the band above the prompt.
+// report, and show one plain-words line under the command's row. The
+// spinner keeps Claude Code's own words. A subagent's command, whose row the
+// main chat does not show, has its line in the band above the prompt.
 // Haiku writes the sentence from the counted facts; the rules line stands in
 // until it answers, and whenever it cannot.
 
@@ -227,15 +229,40 @@ function lineOf(run: Run | undefined) {
   return run?.sentence ?? run?.rules
 }
 
-/** Whose line a spinner shows: the main chat's command first, else the newest subagent command. */
-function spinnerRun(requestId: string) {
-  const all = [...runs.values()].filter(one => lineOf(one) !== undefined)
-  if (requestId !== 'main') return all.filter(one => one.agentId === requestId).at(-1)
-  return all.filter(one => one.agentId === undefined).at(-1) ?? all.at(-1)
+/** How far the tape sits in from the row's left edge, in CSS pixels: under the first letter of the row's text. */
+const TAPE_INSET_PX = 28
+
+/** The tape drawn `inset` pixels in from its own left edge, so it lines up under the row's text. */
+function insetTape(px: number, inset: number) {
+  const units = (inset * 24) / px
+  return sized(tape, px)
+    .replace(`width="${px}"`, `width="${px + inset}"`)
+    .replace('viewBox="0 0 24 24"', `viewBox="${-units} 0 ${24 + units} 24"`)
+}
+
+/** The line under a row: the tape starts under the row text's first letter, the words follow it. */
+function subLine($: EngineInterface, e: Parameters<EngineInterface['ui']['resolve']>[0], text: string, key?: string) {
+  const els = $.ui.resolve(e)
+  const { Box, Text } = els
+  const Svg = 'Svg' in els ? els.Svg : undefined
+  return (
+    <Box key={key} flexDirection="row" alignItems="center" gap={2} paddingLeft={1}>
+      {Svg && <Svg source={insetTape(20, TAPE_INSET_PX)} alt="ticker" width={20 + TAPE_INSET_PX} height={20} isInteractive />}
+      <Text size="footnote" dimColor>
+        {text}
+      </Text>
+    </Box>
+  )
 }
 
 export const register: Register = (on, options) => {
   const useModel = options.summaries !== 'rules'
+  registerUpdate(on)
+
+  on('session.start', ($, e, next) => {
+    checkSoon($)
+    return next(e)
+  })
 
   on('tool.call', { tool: 'Bash' }, async ($, e, next) => {
     if (e.run_in_background === true) return next(e)
@@ -273,15 +300,6 @@ export const register: Register = (on, options) => {
     }
   }).catch(($, e, next) => next(e))
 
-  on('ui.render', { component: 'Spinner' }, ($, e, next) => {
-    const run = spinnerRun(e.requestId)
-    const line = lineOf(run)
-    if (run === undefined || line === undefined) return next(e)
-    run.isSeen = true
-    void noteDrawn($, `Spinner ${e.requestId}`, e.surface, line)
-    return next({ ...e, props: { ...e.props, message: line } })
-  })
-
   on('ui.render', { component: 'ToolUse' }, async ($, e, next) => {
     if (e.props.tool !== 'Bash' || !e.props.isRunning) return next(e)
     const run = runs.get(e.props.tool_use_id)
@@ -289,39 +307,31 @@ export const register: Register = (on, options) => {
     if (run === undefined || line === undefined) return next(e)
     run.isSeen = true
     void noteDrawn($, 'ToolUse', e.surface, line)
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box } = $.ui.resolve(e)
     const row = await next(e)
     return (
       <Box flexDirection="column">
         {row}
-        <Text dimColor>{line}</Text>
+        {subLine($, e, line)}
       </Box>
     )
   })
 
-  // The band holds each line the spinner is not showing: a subagent's command
-  // while the main chat is idle, or beside a main-chat command.
+  // The band holds each subagent's line: the main chat shows no row for it.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     if (e.props.hasSurvey) return next(e)
-    const inSpinner = e.props.isWorking ? spinnerRun('main') : undefined
-    const shown = [...runs.values()].filter(one => one !== inSpinner && lineOf(one) !== undefined)
+    const shown = [...runs.values()].filter(one => one.agentId !== undefined && lineOf(one) !== undefined)
     if (shown.length === 0) return next(e)
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box } = $.ui.resolve(e)
     const rest = await next(e)
     for (const one of shown) {
       one.isSeen = true
       void noteDrawn($, 'AbovePrompt', e.surface, lineOf(one) ?? '')
     }
-    return (
-      <Box flexDirection="column">
-        {rest}
-        {shown.map(one => (
-          <Text dimColor>
-            {one.agentId === undefined ? '' : 'Subagent: '}
-            {lineOf(one)}
-          </Text>
-        ))}
-      </Box>
+    return below(
+      Box,
+      rest,
+      shown.map(one => subLine($, e, `Subagent: ${lineOf(one) ?? ''}`, one.id)),
     )
   })
 }

@@ -13,9 +13,9 @@ A Claude Code mod for the desktop app. After 30 seconds, a running command gets 
 
 </div>
 
-![Two desktop app chats run the same 36-test Python suite. The left chat has ticker, and its line says which test failed and which test runs now. The right chat shows only "Running the app's unittest suite verbosely".](docs/demo.gif)
+![Two desktop app chats run the same command: download the requests library, install its packages and run its 618 tests. The left chat has ticker, and the line under the command says how the tests are going and that one timeout test failed. The right chat shows only "Cloning requests, install dev deps, run tests".](docs/demo.gif)
 
-<p align="center"><sub>Left: ticker. Right: no mod. <a href="docs/demo.mp4">Full run</a>.</sub></p>
+<p align="center"><sub>Left: ticker. Right: no mod. The first 33 seconds at 16 times speed, then 4 times. <a href="docs/demo.mp4">Full run, slower</a>.</sub></p>
 
 ## Install
 

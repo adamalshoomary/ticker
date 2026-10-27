@@ -1,0 +1,22 @@
+{
+  "name": "ticker",
+  "version": "1.0.0",
+  "description": "A plain-words line in the spinner row while a long shell command runs, so you can see what the command is doing without opening it.",
+  "author": {
+    "name": "Adam Al Shoomary",
+    "url": "https://github.com/adamalshoomary"
+  },
+  "license": "MIT",
+  "userConfig": {
+    "summaries": {
+      "type": "string",
+      "title": "Who writes the line",
+      "description": "haiku: Haiku turns the counted facts into a sentence, about every 20 seconds while the command prints and every 60 seconds while it is quiet. Each call counts against your plan or API key. rules: the mod's own rules write the line and no model is called.",
+      "default": "haiku",
+      "options": [
+        "haiku",
+        "rules"
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  Source of site/card.png, the 1280x640 link preview card.
+  GitHub shows it when someone shares the repository link (Settings, Social preview).
+  The install page uses it as og:image.
+
+  To render it again on macOS, run from the repository root:
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu --hide-scrollbars \
+    --force-device-scale-factor=1 --window-size=1280,640 --user-data-dir="$(mktemp -d)" \
+    --screenshot=site/card.png "file://$PWD/tools/card.html"
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --bg: #f5f8fc; --fg: #1f2328; --muted: #59636e; --panel: #ffffff; --line: #dce4ef; --accent: #1d5fb8; --accent-fg: #ffffff; --code: #eaf0f8; }
+
+  * { box-sizing: border-box; }
+  .chat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 24px 48px -28px rgba(0,0,0,.35); }
+  .chat .label { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .chat .label:not(:first-child) { margin-top: 18px; }
+  .row { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+  .row span { flex: 1; }
+  .row em { font-style: normal; color: var(--muted); font-size: 14px; white-space: nowrap; }
+  .row.muted span { color: var(--muted); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--muted); flex: none; }
+  .dot.on { border-color: var(--accent); background: var(--accent); }
+  .sub-row { margin: 6px 0 0 24px; font-size: 14px; color: var(--muted); }
+  .band { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+  .band b { color: var(--accent); }
+  .btn { border: 1px solid var(--line); border-radius: 8px; padding: 4px 10px; font-size: 13px; white-space: nowrap; }
+  .prompt { display: flex; justify-content: space-between; margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 12px; color: var(--muted); font-size: 15px; }
+  .prompt em { font-style: normal; font-size: 13px; color: var(--accent); font-weight: 600; }
+  .ticks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; font-size: 15px; }
+  .ticks li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+
+  * { margin: 0; }
+  html, body { width: 1280px; height: 640px; overflow: hidden; }
+  body { background: var(--bg); color: var(--fg); display: flex; align-items: center; gap: 56px; padding: 0 80px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  .left { flex: 0 0 520px; }
+  h1 { font-size: 128px; line-height: 0.92; letter-spacing: -0.05em; font-weight: 800; margin-bottom: 26px; }
+  .tag { font-size: 34px; line-height: 1.22; color: #3d444d; margin-bottom: 34px; }
+  .ask-label { font-size: 19px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+  .ask { background: var(--panel); border: 2px solid var(--line); border-left: 8px solid var(--accent); border-radius: 12px; padding: 16px 20px; font: 23px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .foot { margin-top: 30px; font-size: 19px; color: var(--muted); }
+  .right { flex: 1; }
+  .chat { padding: 30px 32px; border-width: 2px; }
+  .row { font-size: 21px; }
+  .row em { font-size: 18px; }
+  .chat .label { font-size: 15px; }
+  .sub-row { font-size: 18px; }
+  .band { font-size: 19px; }
+  .prompt { font-size: 19px; }
+  .prompt em, .btn { font-size: 16px; }
+  .ticks { font-size: 19px; }
+</style>
+</head>
+<body>
+  <div class="left">
+    <h1>ticker</h1>
+    <p class="tag">See what a long command is doing, in plain words.</p>
+    <p class="ask-label">Paste into Claude Code:</p>
+    <p class="ask">Install ticker from<br>github.com/adamalshoomary/ticker</p>
+    <p class="foot">Claude Code desktop app · macOS</p>
+  </div>
+  <div class="right"><div class="chat">
+  <p class="label">Without a mod</p>
+  <div class="row muted"><i class="dot"></i><span>Running the app's unittest suite</span><em>1m 41s</em></div>
+  <p class="label">With ticker</p>
+  <div class="row"><i class="dot on"></i><span>Rotate image test failed; JSON import test is running now</span><em>1m 43s</em></div>
+  <div class="sub-row">22 of 36 tests done, one failure so far: image rotation</div>
+</div></div>
+</body>
+</html>

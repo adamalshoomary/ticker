@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { BoxProps, ElementConstructor, EngineInterface, On, RenderChildren, RenderNode } from 'claude-code'
 
-import { arrow, sized } from './icons'
+import { arrowBusy, arrowIn, arrowStill, BAND_W, ICON_PX } from './icons'
 
 // The update check, the same file in each of Adam's mods. Once a day at most,
 // read the mod's plugin.json on GitHub's main branch, the file
@@ -168,6 +168,8 @@ export function registerUpdate(on: On) {
     const Svg = 'Svg' in els ? els.Svg : undefined
     const name = $.plugin.name
     const rest = await next(e)
+    // The arrow draws in as the line shows, and rises while Update runs.
+    const icon = shown.phase === 'offer' ? arrowIn : shown.phase === 'updating' ? arrowBusy : arrowStill
     let words
     if (shown.phase === 'offer') {
       words = [
@@ -191,7 +193,7 @@ export function registerUpdate(on: On) {
       Box,
       rest,
       <Box key="update" flexDirection="row" alignItems="center" gap="sm">
-        {Svg && <Svg source={sized(arrow, 16)} alt={`${name} update`} width={16} height={16} />}
+        {Svg && <Svg source={icon} alt={`${name} update`} width={BAND_W} height={ICON_PX} isInteractive />}
         {words}
       </Box>,
     )

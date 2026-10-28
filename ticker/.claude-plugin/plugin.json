@@ -1,6 +1,6 @@
 {
   "name": "ticker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A plain-words line in the spinner row while a long shell command runs, so you can see what the command is doing without opening it.",
   "author": {
     "name": "Adam Al Shoomary",

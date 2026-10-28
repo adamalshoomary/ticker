@@ -65,3 +65,52 @@ export function waveUndraw(px: number, inset: number, ageS: number): string {
 export function waveCleared(px: number, inset: number): string {
   return frame(px, inset, '', '')
 }
+
+// The band's icons, the same block in each of Adam's mods. An icon draws at
+// ICON_PX in a frame INSET pixels wider on the left, so it sits centred over
+// the prompt box's + and the row's words start where the working row's do.
+// Measured in desktop app 4.29.0 (Q26).
+
+/** CSS pixels: the icon's size, and the empty room left of it. */
+export const ICON_PX = 16
+export const INSET = 5.8
+/** The frame's width, for the Svg's `width`. */
+export const BAND_W = ICON_PX + INSET
+
+const ORIGIN = 'transform-box:view-box;transform-origin:12px 12px'
+
+/** One band frame's markup: a 24-unit drawing, widened on the left. */
+function bandFrame(style: string, body: string): string {
+  const units = (INSET * 24) / ICON_PX
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${BAND_W}" height="${ICON_PX}" viewBox="${-units} 0 ${24 + units} 24">${style}${body}</svg>`
+}
+
+/** A still 24 by 24 icon in the band's frame. */
+export function banded(svg: string): string {
+  const units = (INSET * 24) / ICON_PX
+  return svg.replace(
+    'width="24" height="24" viewBox="0 0 24 24"',
+    `width="${BAND_W}" height="${ICON_PX}" viewBox="${-units} 0 ${24 + units} 24"`,
+  )
+}
+
+const SHAFT = 'M12.3 19.8 C12.1 15.2 11.8 10.4 12.1 5.2'
+const HEAD = 'M7.1 10.1 C8.9 8.2 10.6 6.4 12.1 4.6 C13.7 6.1 15.4 7.9 17.2 9.4'
+const ARROW_LINE = 'fill="none" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" pathLength="100" stroke-dasharray="100 101"'
+// A dash offset of 99.5 leaves one round dot where a stroke starts; 0 shows it whole.
+const ARROW_IN = '@keyframes i{0%{stroke-dashoffset:99.5;stroke-width:0}20%{stroke-dashoffset:99.5;stroke-width:2.3px}100%{stroke-dashoffset:0;stroke-width:2.3px}}'
+
+/** The update arrow as its line shows: it grows from a dot at its foot over 1.2 s, then stays. */
+export const arrowIn = bandFrame(
+  `<style>.a{animation:i .7s ${EASE_OUT} both}.h{animation:i .6s ${EASE_OUT} .6s both}${ARROW_IN}</style>`,
+  `<path class="a" d="${SHAFT}" ${ARROW_LINE}/><path class="h" d="${HEAD}" ${ARROW_LINE}/>`,
+)
+
+/** The update arrow while Update runs: it rises and settles every 1.6 s. */
+export const arrowBusy = bandFrame(
+  `<style>.u{${ORIGIN};animation:u 1.6s ${EASE_IN_OUT} infinite}@keyframes u{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.4px)}}</style>`,
+  `<g class="u"><path d="${SHAFT} ${HEAD}" ${ARROW_LINE.replace(' pathLength="100" stroke-dasharray="100 101"', '')}/></g>`,
+)
+
+/** The update arrow, still. */
+export const arrowStill = banded(arrow)

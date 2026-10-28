@@ -2,6 +2,7 @@ import type { On } from 'claude-code'
 import { expect, mock, test } from 'claude-code/testing'
 import type { Engine, MockClock } from 'claude-code/testing'
 
+import { arrowIn, arrowStill, BAND_W } from '../hooks/icons'
 import { isNewer } from '../hooks/update'
 
 // The hooks below stand for the engine and the network: the installed
@@ -111,6 +112,8 @@ test('a newer version is offered, and Update installs it', async ($, on) => {
   await start($, clock)
   expect(w.fetches).toEqual([IN_FOLDER])
   expect(await lineOf(band)).toBe(`${NAME} 1.1.0 is out`)
+  // The arrow draws in as the line shows, in the band's frame over the prompt's +.
+  expect((await band.find({ type: 'Svg' }))?.props).toMatchObject({ source: arrowIn, width: BAND_W })
   expect(w.toasts).toEqual(['1.1.0 is out. Update it above the prompt.'])
   expect((await band.find({ key: 'update-now' }))?.props.label).toBe('Update')
   await band.press({ key: 'update-now' })
@@ -119,6 +122,7 @@ test('a newer version is offered, and Update installs it', async ($, on) => {
     [CLAUDE, 'plugin', 'update', `${NAME}@${NAME}`, '--json'],
   ])
   expect(await lineOf(band)).toBe(`${NAME} 1.1.0 is installed. Next chat uses it.`)
+  expect((await band.find({ type: 'Svg' }))?.props.source).toBe(arrowStill)
   await band.press({ key: 'update-ok' })
   expect(await lineOf(band)).toBe('')
 })

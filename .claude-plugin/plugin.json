@@ -1,6 +1,6 @@
 {
   "name": "ticker",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "The version, for update checks in ticker 2.1.0 and older. The mod itself is in ticker/.",
   "author": {
     "name": "Adam Al Shoomary",

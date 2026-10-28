@@ -2,11 +2,14 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "ticker",
   "description": "ticker, a Claude Code mod that says in plain words what a long shell command is doing while it runs.",
-  "owner": { "name": "Adam Al Shoomary", "url": "https://github.com/adamalshoomary" },
+  "owner": {
+    "name": "Adam Al Shoomary",
+    "url": "https://github.com/adamalshoomary"
+  },
   "plugins": [
     {
       "name": "ticker",
-      "source": "./",
+      "source": "./ticker",
       "description": "A plain-words line in the spinner row while a long shell command runs."
     }
   ]

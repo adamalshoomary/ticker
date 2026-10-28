@@ -4,7 +4,7 @@
   GitHub shows it when someone shares the repository link (Settings, Social preview).
   The install page uses it as og:image.
 
-  To render it again on macOS, run from the repository root:
+  To render it again on macOS, run from the ticker folder:
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu --hide-scrollbars \
     --force-device-scale-factor=1 --window-size=1280,640 --user-data-dir="$(mktemp -d)" \
     --screenshot=site/card.png "file://$PWD/tools/card.html"
@@ -79,7 +79,7 @@
   <div class="tool"><svg class="spin" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="5" cy="4.6" r="2.4"/><circle cx="13.2" cy="5.4" r="2.4"/><circle cx="4.4" cy="13" r="2.4"/><circle cx="12.6" cy="13.4" r="2.4"/></svg><span>Cloning requests, install dev deps, run tests<span class="time">1m 0s <span class="chev">›</span></span></span></div>
   <p class="label">With ticker</p>
   <div class="tool"><svg class="spin" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="5" cy="4.6" r="2.4"/><circle cx="13.2" cy="5.4" r="2.4"/><circle cx="4.4" cy="13" r="2.4"/><circle cx="12.6" cy="13.4" r="2.4"/></svg><span>Cloning requests, install dev deps, run tests<span class="time">1m 0s <span class="chev">›</span></span></span></div>
-  <div class="tline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" viewBox="0 0 24 24"><path d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".28"/><path stroke-dasharray="36 140" stroke-dashoffset="-34" d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" pathLength="100" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span>Requests tests running; one timeout test has failed so far</span></div>
+  <div class="tline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" viewBox="0 0 24 24"><path d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" pathLength="100" stroke-dasharray="100 101"/></svg><span>Requests tests running; one timeout test has failed so far</span></div>
 </div></div>
 </body>
 </html>

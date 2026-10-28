@@ -5,7 +5,10 @@ import { arrow, sized } from './icons'
 
 // The update check, the same file in each of Adam's mods. Once a day at most,
 // read the mod's plugin.json on GitHub's main branch, the file
-// `claude plugin update` reads too. When it names a newer version, a line
+// `claude plugin update` reads too: `<mod>/.claude-plugin/plugin.json` where
+// the repository keeps the mod in a folder of its name, else the one at the
+// top. Such a repository also keeps the version at the top, for copies made
+// before the move, which read only there. When it names a newer version, a line
 // above the prompt offers it: Update runs `claude plugin update`, and Not now
 // hides that version until a newer one comes out. A pop-up says so once per
 // version too, since the app hides the line while its next-step box is up. Nothing installs without
@@ -56,9 +59,14 @@ async function installedVersion($: EngineInterface): Promise<string | undefined>
 }
 
 async function latestVersion($: EngineInterface, name: string): Promise<string | undefined> {
-  const url = `https://raw.githubusercontent.com/${OWNER}/${name}/main/.claude-plugin/plugin.json`
-  const reply = await $.http.fetch(url).catch(() => undefined)
-  return reply?.ok === true ? versionIn(reply.text) : undefined
+  const main = `https://raw.githubusercontent.com/${OWNER}/${name}/main`
+  for (const path of [`${name}/.claude-plugin/plugin.json`, '.claude-plugin/plugin.json']) {
+    const reply = await $.http.fetch(`${main}/${path}`).catch(() => undefined)
+    if (reply === undefined) return undefined
+    if (reply.ok) return versionIn(reply.text)
+    if (reply.status !== 404) return undefined
+  }
+  return undefined
 }
 
 async function kept($: EngineInterface): Promise<Kept | undefined> {
@@ -95,6 +103,8 @@ async function install($: EngineInterface, latest: string) {
   let text = `Couldn't update. Run ${by} in a terminal.`
   let isWarning = true
   try {
+    // `claude plugin update` skips fetching a marketplace it fetched a short while ago, so fetch it first.
+    await $.process.run([claude, 'plugin', 'marketplace', 'update', name]).catch(() => undefined)
     const ran = await $.process.run([claude, 'plugin', 'update', `${name}@${name}`, '--json'])
     const line = ran.stdout.split('\n').find(one => one.trim().startsWith('{'))
     const result = line === undefined ? undefined : (JSON.parse(line) as { outcome?: string; newVersion?: string; message?: string })

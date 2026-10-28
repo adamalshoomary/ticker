@@ -51,6 +51,7 @@ describe('the rules line', () => {
     const command = 'go test -v -count=1 ./... 2>&1 | tail -25'
     expect(heldBack(command)).toBe('The command pipes into tail, so its output is held back until it ends.')
     expect(rulesLine(newTally(), command)).toBe('Nothing shown yet: it pipes into tail, so results show at the end')
+    expect(rulesLine(newTally(), 'grep -vE "toolu_(JuvJ|GDQo)" dev.log | tail -12')).toBe('Nothing shown yet: it pipes into tail, so results show at the end')
     expect(heldBack('make 2>&1')).toBeUndefined()
     expect(heldBack('make > build.log')).toBe('The command writes its output to build.log, so little shows here.')
   })

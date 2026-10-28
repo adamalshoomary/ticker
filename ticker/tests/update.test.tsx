@@ -9,7 +9,11 @@ import { isNewer } from '../hooks/update'
 
 const NAME = 'ticker'
 const CLAUDE = '/app/claude'
-const RAW = `https://raw.githubusercontent.com/adamalshoomary/${NAME}/main/.claude-plugin/plugin.json`
+const MAIN = `https://raw.githubusercontent.com/adamalshoomary/${NAME}/main`
+/** Where a repository that keeps the mod in its own folder holds the version. */
+const IN_FOLDER = `${MAIN}/${NAME}/.claude-plugin/plugin.json`
+/** Where a repository with the mod at its top holds it. */
+const AT_TOP = `${MAIN}/.claude-plugin/plugin.json`
 /** The mod's own band line, which sits beside the update line. */
 const OWN_BAND: RegExp | undefined = undefined
 const DAY = 24 * 60 * 60 * 1000
@@ -19,6 +23,8 @@ type World = {
   installed: string
   /** The version on GitHub; null answers 404, 'offline' rejects. */
   latest: string | null | 'offline'
+  /** Where GitHub holds that version. */
+  at: string
   fetches: string[]
   store: Map<string, unknown>
   runs: string[][]
@@ -31,6 +37,7 @@ function world(on: On, env: Record<string, string> = {}): World {
   const w: World = {
     installed: '1.0.0',
     latest: '1.1.0',
+    at: IN_FOLDER,
     fetches: [],
     store: new Map(),
     runs: [],
@@ -41,7 +48,7 @@ function world(on: On, env: Record<string, string> = {}): World {
   on('http.fetch', async (_, e) => {
     w.fetches.push(e.url)
     if (w.latest === 'offline') throw new Error('offline')
-    const isFound = w.latest !== null && e.url === RAW
+    const isFound = w.latest !== null && e.url === w.at
     return { value: { status: isFound ? 200 : 404, ok: isFound, headers: {}, text: isFound ? JSON.stringify({ name: NAME, version: w.latest }) : 'Not Found' } }
   })
   on('store.get', (_, e) => ({ value: w.store.get(e.key) }))
@@ -102,12 +109,15 @@ test('a newer version is offered, and Update installs it', async ($, on) => {
   const w = world(on)
   const band = await $.ui.mount(BAND)
   await start($, clock)
-  expect(w.fetches).toEqual([RAW])
+  expect(w.fetches).toEqual([IN_FOLDER])
   expect(await lineOf(band)).toBe(`${NAME} 1.1.0 is out`)
   expect(w.toasts).toEqual(['1.1.0 is out. Update it above the prompt.'])
   expect((await band.find({ key: 'update-now' }))?.props.label).toBe('Update')
   await band.press({ key: 'update-now' })
-  expect(w.runs.at(-1)).toEqual([CLAUDE, 'plugin', 'update', `${NAME}@${NAME}`, '--json'])
+  expect(w.runs.filter(argv => argv[0] === CLAUDE)).toEqual([
+    [CLAUDE, 'plugin', 'marketplace', 'update', NAME],
+    [CLAUDE, 'plugin', 'update', `${NAME}@${NAME}`, '--json'],
+  ])
   expect(await lineOf(band)).toBe(`${NAME} 1.1.0 is installed. Next chat uses it.`)
   await band.press({ key: 'update-ok' })
   expect(await lineOf(band)).toBe('')
@@ -138,8 +148,18 @@ test('offline, or a missing file, shows nothing and keeps no check', async ($, o
   w.latest = null
   await start($, clock)
   expect(await lineOf(band)).toBe('')
-  expect(w.fetches.length).toBe(2)
+  expect(w.fetches).toEqual([IN_FOLDER, IN_FOLDER, AT_TOP])
   expect(w.store.has('update')).toBe(false)
+})
+
+test('a repository with the mod at its top is read there', async ($, on) => {
+  const clock = mock.clock(on, { now: T0 })
+  const w = world(on)
+  w.at = AT_TOP
+  const band = await $.ui.mount(BAND)
+  await start($, clock)
+  expect(w.fetches).toEqual([IN_FOLDER, AT_TOP])
+  expect(await lineOf(band)).toBe(`${NAME} 1.1.0 is out`)
 })
 
 test('one check a day: a second session that day reads the kept answer', async ($, on) => {

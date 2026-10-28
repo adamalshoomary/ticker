@@ -68,15 +68,11 @@
   .big { flex: none; display: inline-flex; align-items: center; gap: 14px; background: var(--accent); color: var(--accent-fg); text-decoration: none; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; padding: 16px 24px; border-radius: 12px; transition: transform .12s ease, filter .12s ease; }
   .big:hover { transform: translateY(-1px); filter: brightness(1.05); }
   .big span { font-size: 20px; line-height: 1; }
-  .term { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--line); }
-  .term .label { margin: 0 0 10px; font-size: 15px; font-weight: 600; color: var(--muted); }
-  .copy { display: flex; align-items: center; gap: 12px; background: var(--code); border-radius: 12px; padding: 8px 8px 8px 18px; }
-  .copy code { flex: 1; overflow-x: auto; white-space: nowrap; font-size: 15px; padding: 6px 0; }
-  .copy button { flex: none; font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px; border-radius: 9px; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
-  .copy button:hover { border-color: var(--muted); }
   .chips { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
   .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 15px; color: var(--muted); background: var(--panel); }
   .chips li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+  .demo video { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 1216; border-radius: 16px; border: 1px solid var(--line); background: #141413; box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 24px 48px -28px rgba(0,0,0,.35); }
+  .demo p { margin: 12px 0 0; font-size: 15px; color: var(--muted); text-align: center; }
   details { margin: 20px 0 0; }
   summary { cursor: pointer; font-weight: 600; color: var(--muted); }
   details p { margin: 14px 0 8px; font-size: 16px; }
@@ -97,9 +93,6 @@
     .top { flex-direction: column; align-items: stretch; gap: 20px; }
     .top h2 { font-size: 28px; }
     .big { justify-content: space-between; }
-    .copy { flex-direction: column; align-items: stretch; padding: 14px; }
-    .copy code { white-space: normal; font-size: 14px; }
-    .nw { white-space: nowrap; }
     .three { grid-template-columns: 1fr; gap: 18px; }
     .ticks { grid-template-columns: 1fr; }
   }
@@ -118,9 +111,14 @@
   <div class="tool"><svg class="spin" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="5" cy="4.6" r="2.4"/><circle cx="13.2" cy="5.4" r="2.4"/><circle cx="4.4" cy="13" r="2.4"/><circle cx="12.6" cy="13.4" r="2.4"/></svg><span>Cloning requests, install dev deps, run tests<span class="time">1m 0s <span class="chev">›</span></span></span></div>
   <p class="label">With ticker</p>
   <div class="tool"><svg class="spin" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="5" cy="4.6" r="2.4"/><circle cx="13.2" cy="5.4" r="2.4"/><circle cx="4.4" cy="13" r="2.4"/><circle cx="12.6" cy="13.4" r="2.4"/></svg><span>Cloning requests, install dev deps, run tests<span class="time">1m 0s <span class="chev">›</span></span></span></div>
-  <div class="tline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" viewBox="0 0 24 24"><style>.t{stroke-dasharray:36 140;animation:m 1.8s cubic-bezier(.45,.05,.55,.95) infinite}@keyframes m{from{stroke-dashoffset:38}to{stroke-dashoffset:-102}}</style><path d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".28"/><path class="t" d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" pathLength="100" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span>Requests tests running; one timeout test has failed so far</span></div>
+  <div class="tline"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" viewBox="0 0 24 24"><style>.w{animation:i 1.2s cubic-bezier(.3,0,.2,1) 0.00s both,s 4.8s cubic-bezier(.45,0,.55,1) 1.20s infinite}@keyframes i{0%{stroke-dashoffset:99.5;stroke-width:0}27%{stroke-dashoffset:99.5;stroke-width:2.3px}100%{stroke-dashoffset:0;stroke-width:2.3px}}@keyframes s{0%,50%,100%{d:path("M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1")}25%{d:path("M2.2 13.6 C4.1 13.9 4.9 8.3 6.9 8.0 C9.2 7.7 8.8 16.1 11.4 16.4 C13.8 16.7 13.1 6.5 15.8 6.2 C18.0 6.0 18.2 12.3 21.8 11.6")}75%{d:path("M2.2 13.3 C4.1 13.6 4.3 10.4 6.3 10.1 C8.6 9.8 8.4 17.5 11.0 17.8 C13.4 18.1 13.7 4.6 16.4 4.3 C18.6 4.1 18.2 13.3 21.8 12.6")}}</style><path class="w" d="M2.2 13.6 C4.1 13.9 4.6 9.4 6.6 9.1 C8.9 8.8 8.6 16.9 11.2 17.2 C13.6 17.5 13.4 5.4 16.1 5.1 C18.3 4.9 18.2 12.8 21.8 12.1" stroke="#D97757" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" fill="none" pathLength="100" stroke-dasharray="100 101"/></svg><span>Requests tests running; one timeout test has failed so far</span></div>
 </div>
   </header>
+
+  <section class="demo">
+    <video src="demo.mp4" poster="demo-poster.jpg" autoplay muted loop playsinline controls preload="metadata" aria-label="Two desktop app chats run the same command: download the requests library, install its packages and run its 618 tests. The chat with ticker shows a line under the command saying how the tests are going and that one timeout test failed. The chat without it shows only the command's name."></video>
+    <p>Real recording, sped up.</p>
+  </section>
 
   <section id="install">
     <div class="panel">
@@ -131,50 +129,24 @@
         </div>
         <a class="big" href="claude://code/new?q=Install%20the%20ticker%20mod%20from%20https%3A%2F%2Fgithub.com%2Fadamalshoomary%2Fticker.">Open in Claude Code <span>→</span></a>
       </div>
-      <div class="term">
-        <p class="label">Or paste into Terminal</p>
-        <div class="copy">
-          <code id="line">claude plugin install ticker <span class="nw">--marketplace</span> adamalshoomary/ticker</code>
-          <button id="copy" type="button">Copy</button>
-        </div>
-      </div>
     </div>
     <ul class="chips" aria-label="You need"><li>Claude Code desktop app</li><li>macOS</li><li>A Claude plan or API key</li></ul>
     
     <details>
-      <summary>Other ways to install</summary>
+      <summary>Another way to install</summary>
       <p>Desktop app: <b>+</b> next to the prompt → <b>Plugins</b> → <b>Add marketplace</b> → <code>adamalshoomary/ticker</code> → <b>Add plugin</b>.</p>
-      <p>Claude Code in a terminal:</p>
-      <pre>/plugin install ticker --marketplace adamalshoomary/ticker</pre>
     </details>
   </section>
 
   <section class="run">
     <h2>Then run anything long</h2>
-    <p>Any command over 30 seconds gets the line, in subagents too.</p>
-    <div class="three"><div><b>At 30 seconds</b><span>Rules count the tests, files and steps.</span></div><div><b>Every 20 seconds</b><span>Haiku turns them into one sentence. Every number is checked.</span></div><div><b>Free mode</b><span>Set <code>summaries</code> to <code>rules</code> for no model calls.</span></div></div>
+    <p>Any command over 30 seconds gets the line, in the background too.</p>
+    <div class="three"><div><b>At 30 seconds</b><span>A line shows under the command: how far it is, and what failed.</span></div><div><b>Haiku, the default</b><span>Haiku writes a sentence from ticker's counts, and every number is checked. It uses a tiny bit of your plan.</span></div><div><b>Free mode</b><span>ticker writes the line from its own counts. It costs nothing. Type <code>/ticker</code> to switch.</span></div></div>
   </section>
 
   <footer>
     <p><a href="https://github.com/adamalshoomary/ticker">ticker on GitHub</a> · MIT licence</p>
   </footer>
 </main>
-<script>
-  const line = document.getElementById("line");
-  document.getElementById("copy").addEventListener("click", async (e) => {
-    try {
-      await navigator.clipboard.writeText(line.textContent);
-      e.target.textContent = "Copied";
-    } catch (err) {
-      const range = document.createRange();
-      range.selectNodeContents(line);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-      e.target.textContent = /Mac/.test(navigator.platform) ? "Press Cmd+C" : "Press Ctrl+C";
-    }
-    setTimeout(() => { e.target.textContent = "Copy"; }, 2000);
-  });
-</script>
 </body>
 </html>

@@ -356,8 +356,11 @@ export function progressOf(line: string | undefined): { percent?: number; step?:
 }
 
 /** What the command's own text says about where its output goes. */
+/** A pipe into a tool that prints only once its input ends. */
+const PIPED = /\|\s*(tail|head|sort|uniq|wc|less|more|jq|column|grep|awk|sed|xargs)\b/
+
 export function heldBack(command: string): string | undefined {
-  const pipe = command.match(/\|\s*(tail|head|sort|uniq|wc|less|more|jq|column|grep|awk|sed|xargs)\b/)
+  const pipe = command.match(PIPED)
   if (pipe) return `The command pipes into ${pipe[1]}, so its output is held back until it ends.`
   const redirect = command.match(/(?:^|[^0-9&<>])(?:&>|1?>>?)\s*([^\s;&|]+)/)
   if (redirect && redirect[1] !== '/dev/null' && !/^&\d$/.test(redirect[1] ?? '')) return `The command writes its output to ${redirect[1]}, so little shows here.`
@@ -465,7 +468,7 @@ export function rulesLine(t: Tally, command: string): string {
   const last = newest.at(-1)
   if (last) return cut(`Last printed: ${last.trim()}`, MAX_LINE)
   const held = heldBack(command)
-  if (held?.includes('pipes')) return cut(`Nothing shown yet: it pipes into ${command.match(/\|\s*(\w+)/)?.[1] ?? 'another command'}, so results show at the end`, MAX_LINE)
+  if (held?.includes('pipes')) return cut(`Nothing shown yet: it pipes into ${command.match(PIPED)?.[1] ?? 'another command'}, so results show at the end`, MAX_LINE)
   if (held) return 'Nothing shown yet: it writes to a file'
   return 'Nothing printed yet'
 }
